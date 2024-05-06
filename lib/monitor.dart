@@ -72,3 +72,8 @@ class _CaptureImagePageState extends State<CaptureImagePage> {
     );
   }
 }
+
+
+
+ git config --global user.email "natashaships@gmail.com"
+  git config --global user.name "Nana-titu24"
