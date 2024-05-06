@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "355240987985",
+    "project_id": "agrisfa",
+    "storage_bucket": "agrisfa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:355240987985:android:f256be5591992a7e885770",
+        "android_client_info": {
+          "package_name": "com.example.smartfarm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7NHmajgeYlbU03PJ8WbOJYa4SztEa2Fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
