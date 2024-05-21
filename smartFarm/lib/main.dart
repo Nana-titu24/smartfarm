@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,7 +7,7 @@ import 'dart:io';
 import 'dashboard.dart';
 
 void main() async {
- WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
           options: const FirebaseOptions(
@@ -16,8 +18,9 @@ void main() async {
           ),
         )
       : await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
 
@@ -121,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 } catch (e) {
                   // Handle signup errors
-                  print('Failed to signup: $e');
                 }
               },
               child: const Text('Sign Up'),
@@ -213,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Colors.black.withOpacity(0.4),
                   Colors.transparent,
                 ],
-                stops: [0.0, 0.5, 1.0],
+                stops: const [0.0, 0.5, 1.0],
               ),
             ),
           ),
@@ -221,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
+                const Text(
                   'WELCOME TO SMART FARM',
                   style: TextStyle(
                     color: Colors.white,
@@ -229,12 +231,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _showLoginDialog,
                   child: const Text('Login'),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _showSignupDialog,
                   child: const Text('Sign Up'),

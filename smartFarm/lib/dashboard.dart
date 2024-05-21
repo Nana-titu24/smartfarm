@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'monitor.dart';
-import '../weather/home_page.dart'; // Assuming you have a WeatherPage defined in weather.dart
+import '../weather/home_page.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -8,10 +8,10 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[700],
-        title: Text('Dashboard'),
-        actions: [
+        title: const Text('Dashboard'),
+        actions: const [
           Padding(
-            padding: const EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 20.0),
             child:
                 Text('Welcome back, Tasha!!!', style: TextStyle(fontSize: 16)),
           ),
@@ -35,7 +35,7 @@ class DashboardPage extends StatelessWidget {
                   },
                 );
               },
-              child: Text('TAP PLANTO'),
+              child: const Text('TAP PLANTO'),
             ),
           ),
         ],
@@ -43,7 +43,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  _buildButtonsDialog(BuildContext context) {
+  Widget _buildButtonsDialog(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
@@ -61,37 +61,37 @@ class DashboardPage extends StatelessWidget {
             children: [
               _buildButtonWithIcon(context, 'Weather Forecast', Icons.wb_sunny,
                   _navigateToWeatherPage),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(context, 'Plant Growth Activity', Icons.spa,
                   _showPlantGrowthForm),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(context, 'Soil Moisture', Icons.opacity,
                   _showSoilMoistureForm),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(
                   context, 'Water Levels', Icons.pool, _showWaterLevelsForm),
-              SizedBox(height: 10),
-              _buildButtonWithIcon(context, 'Crop Management', Icons.input,
+              const SizedBox(height: 10),
+              _buildButtonWithIcon(context, 'Crop Management', Icons.grass,
                   _showCropManagementForm),
-              SizedBox(height: 10),
-              _buildButtonWithIcon(context, 'Livestock Records', Icons.input,
+              const SizedBox(height: 10),
+              _buildButtonWithIcon(context, 'Livestock Records', Icons.pets,
                   _showLivestockRecordsForm),
-              SizedBox(height: 10),
-              _buildButtonWithIcon(
-                  context, 'Harvest Data', Icons.input, _showHarvestDataForm),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
+              _buildButtonWithIcon(context, 'Harvest Data', Icons.agriculture,
+                  _showHarvestDataForm),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(context, 'Latest Agriculture News',
                   Icons.article, _showLatestAgricultureNewsForm),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(
-                  context, 'Trends', Icons.article, _showTrendsForm),
-              SizedBox(height: 10),
-              _buildButtonWithIcon(context, 'Task Reminder', Icons.article,
-                  _showTaskReminderForm),
-              SizedBox(height: 10),
+                  context, 'Trends', Icons.trending_up, _showTrendsForm),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(
-                  context, 'Metrics', Icons.article, _showMetricsForm),
-              SizedBox(height: 10),
+                  context, 'Task Reminder', Icons.alarm, _showTaskReminderForm),
+              const SizedBox(height: 10),
+              _buildButtonWithIcon(
+                  context, 'Metrics', Icons.analytics, _showMetricsForm),
+              const SizedBox(height: 10),
               _buildButtonWithIcon(
                   context, 'Monitor', Icons.monitor, _goToMonitorPage),
             ],
@@ -104,7 +104,7 @@ class DashboardPage extends StatelessWidget {
   void _navigateToWeatherPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 
@@ -140,14 +140,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Plant Growth Activity'),
-          content: Text('seed phase,vegetation,final growth.'),
+          title: const Text('Plant Growth Activity'),
+          content: const Text('seed phase,vegetation,final growth.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -160,14 +160,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Soil Moisture'),
-          content: Text('low,high,optimal.'),
+          title: const Text('Soil Moisture'),
+          content: const Text('low,high,optimal.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -180,14 +180,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Water Levels'),
-          content: Text('high,low.'),
+          title: const Text('Water Levels'),
+          content: const Text('high,low.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -200,14 +200,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Crop Management'),
-          content: Text('crop type,plant date,harvest date.'),
+          title: const Text('Crop Management'),
+          content: const Text('crop type,plant date,harvest date.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -220,15 +220,15 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Livestock Records'),
-          content: Text(
+          title: const Text('Livestock Records'),
+          content: const Text(
               'livestock type,number of livestock,date of birth,vaccination date.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -241,14 +241,15 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Harvest Data'),
-          content: Text('crop type,harvest quantity,harvest date,quality.'),
+          title: const Text('Harvest Data'),
+          content:
+              const Text('crop type,harvest quantity,harvest date,quality.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -261,14 +262,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Latest Agriculture News'),
-          content: Text('news headlines,content.'),
+          title: const Text('Latest Agriculture News'),
+          content: const Text('news headlines,content.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -281,14 +282,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Trends'),
-          content: Text('courses,modules.'),
+          title: const Text('Trends'),
+          content: const Text('courses,modules.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -301,14 +302,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Task Reminder'),
-          content: Text('vaccination,machinery maintainance.'),
+          title: const Text('Task Reminder'),
+          content: const Text('vaccination,machinery maintenance.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -321,14 +322,14 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Metrics'),
-          content: Text('1,2,3.'),
+          title: const Text('Metrics'),
+          content: const Text('1,2,3.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
