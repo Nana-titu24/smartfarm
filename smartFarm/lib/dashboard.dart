@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'monitor.dart';
+import 'package:smartfarm/screens/deseaseDetection/screens/MonitorPage.dart';
+
 import '../weather/home_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -93,7 +94,7 @@ class DashboardPage extends StatelessWidget {
                   context, 'Metrics', Icons.analytics, _showMetricsForm),
               const SizedBox(height: 10),
               _buildButtonWithIcon(
-                  context, 'Monitor', Icons.monitor, _goToMonitorPage),
+                  context, 'scanner', Icons.monitor, _goToMonitorPage),
             ],
           ),
         ),
@@ -111,7 +112,7 @@ class DashboardPage extends StatelessWidget {
   void _goToMonitorPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MonitorPage()),
+      MaterialPageRoute(builder: (context) => const MonitorPage()),
     );
   }
 
