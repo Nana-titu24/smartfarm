@@ -1,104 +1,170 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:googleapis/vision/v1.dart' as vision;
+import 'package:http/http.dart' as http;
 
-import 'package:dio/dio.dart';
+class PlantDiseaseService {
+  final String apiKey;
+  final String baseUrl = 'https://vision.googleapis.com/v1/images:annotate';
 
-import '../constants/api_constants.dart';
+  PlantDiseaseService({required this.apiKey});
 
-class ApiService {
-  final Dio _dio = Dio();
-
-  Future<String> encodeImage(File image) async {
-    final bytes = await image.readAsBytes();
-    return base64Encode(bytes);
-  }
-
-  Future<String> sendMessageGPT({required String diseaseName}) async {
-    try {
-      final response = await _dio.post(
-        "$BASE_URL/chat/completions",
-        options: Options(
-          headers: {
-            HttpHeaders.authorizationHeader: 'Bearer $API_KEY',
-            HttpHeaders.contentTypeHeader: "application/json",
-          },
-        ),
-        data: {
-          "model": 'gpt-3.5-turbo',
-          "messages": [
-            {
-              "role": "user",
-              "content":
-                  "GPT, upon receiving the name of a plant disease, provide three precautionary measures to prevent or manage the disease. These measures should be concise, clear, and limited to one sentence each. No additional information or context is needed—only the three precautions in bullet-point format. The disease is $diseaseName",
-            }
-          ],
-        },
-      );
-
-      final jsonResponse = response.data;
-
-      if (jsonResponse['error'] != null) {
-        throw HttpException(jsonResponse['error']["message"]);
-      }
-
-      return jsonResponse["choices"][0]["message"]["content"];
-    } catch (error) {
-      throw Exception('Error: $error');
-    }
-  }
-
-  Future<String> sendImageToGPT4Vision({
+  Future<Map<String, dynamic>> analyzePlantDisease({
     required File image,
-    int maxTokens = 50,
-    String model = "gpt-4-vision-preview",
   }) async {
-    final String base64Image = await encodeImage(image);
-
     try {
-      final response = await _dio.post(
-        "$BASE_URL/chat/completions",
-        options: Options(
-          headers: {
-            HttpHeaders.authorizationHeader: 'Bearer $API_KEY',
-            HttpHeaders.contentTypeHeader: "application/json",
+      // Convert image to base64
+      final bytes = await image.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      // Construct the request body
+      final body = {
+        'requests': [
+          {
+            'image': {
+              'content': base64Image,
+            },
+            'features': [
+              {
+                'type': 'OBJECT_LOCALIZATION',
+                'maxResults': 10,
+              },
+              {
+                'type': 'LABEL_DETECTION',
+                'maxResults': 10,
+              },
+              {
+                'type': 'IMAGE_PROPERTIES',
+              },
+              {
+                'type': 'CROP_HINTS',
+              },
+            ],
           },
-        ),
-        data: jsonEncode({
-          'model': model,
-          'messages': [
-            {
-              'role': 'system',
-              'content': 'You have to give concise and short answers'
-            },
-            {
-              'role': 'user',
-              'content': [
-                {
-                  'type': 'text',
-                  'text':
-                      'GPT, your task is to identify plant health issues with precision. Analyze any image of a plant or leaf I provide, and detect all abnormal conditions, whether they are diseases, pests, deficiencies, or decay. Respond strictly with the name of the condition identified, and nothing else—no explanations, no additional text. If a condition is unrecognizable, reply with \'I don\'t know\'. If the image is not plant-related, say \'Please pick another image\'',
-                },
-                {
-                  'type': 'image_url',
-                  'image_url': {
-                    'url': 'data:image/jpeg;base64,$base64Image',
-                  },
-                },
-              ],
-            },
-          ],
-          'max_tokens': maxTokens,
-        }),
+        ],
+      };
+
+      // Make the HTTP request
+      final response = await http.post(
+        Uri.parse('$baseUrl?key=$apiKey'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
       );
 
-      final jsonResponse = response.data;
-
-      if (jsonResponse['error'] != null) {
-        throw HttpException(jsonResponse['error']["message"]);
+      if (response.statusCode != 200) {
+        return {
+          'success': false,
+          'message': 'API request failed: ${response.statusCode}',
+          'conditions': [],
+        };
       }
-      return jsonResponse["choices"][0]["message"]["content"];
+
+      final jsonResponse = jsonDecode(response.body);
+      final responses = jsonResponse['responses'] as List;
+
+      if (responses.isEmpty) {
+        return {
+          'success': false,
+          'message': "Unable to analyze image",
+          'conditions': [],
+        };
+      }
+
+      final firstResponse = responses.first;
+
+      // Check if the image contains plants
+      final labels = firstResponse['labelAnnotations'] ?? [];
+      bool isPlantRelated = labels.any((label) =>
+          (label['description'] ?? '').toLowerCase().contains('plant') ||
+          (label['description'] ?? '').toLowerCase().contains('leaf') ||
+          (label['description'] ?? '').toLowerCase().contains('flower') ||
+          (label['description'] ?? '').toLowerCase().contains('tree'));
+
+      if (!isPlantRelated) {
+        return {
+          'success': false,
+          'message': 'Please provide an image of a plant',
+          'conditions': [],
+        };
+      }
+
+      // Process the annotations to identify potential issues
+      final conditions = <Map<String, dynamic>>[];
+
+      // Analyze labels for potential issues
+      for (var label in labels) {
+        final description = (label['description'] ?? '').toLowerCase();
+        final score = label['score'] ?? 0.0;
+
+        if (description.contains('disease') ||
+            description.contains('pest') ||
+            description.contains('damage') ||
+            description.contains('blight') ||
+            description.contains('rot') ||
+            description.contains('mold') ||
+            description.contains('wilting') ||
+            description.contains('spots')) {
+          conditions.add({
+            'condition': label['description'],
+            'confidence': '${(score * 100).toStringAsFixed(1)}%',
+            'type': _determineConditionType(description),
+          });
+        }
+      }
+
+      // Analyze color properties for potential chlorosis
+      final dominantColors = firstResponse['imagePropertiesAnnotation']
+              ?['dominantColors']?['colors'] ??
+          [];
+      if (dominantColors.isNotEmpty) {
+        for (var color in dominantColors) {
+          final rgb = color['color'] ?? {};
+          if (_isYellowish((rgb['red'] ?? 0).toInt(),
+                  (rgb['green'] ?? 0).toInt(), (rgb['blue'] ?? 0).toInt()) &&
+              (color['score'] ?? 0) > 0.3) {
+            conditions.add({
+              'condition': 'Possible Chlorosis',
+              'confidence': 'Medium',
+              'type': 'Nutrient Deficiency',
+            });
+            break;
+          }
+        }
+      }
+
+      return {
+        'success': true,
+        'message': conditions.isEmpty
+            ? 'No visible plant health issues detected'
+            : 'Analysis complete',
+        'conditions': conditions,
+      };
     } catch (e) {
-      throw Exception('Error: $e');
+      return {
+        'success': false,
+        'message': 'Error analyzing image: $e',
+        'conditions': [],
+      };
     }
+  }
+
+  String _determineConditionType(String description) {
+    if (description.contains('pest') || description.contains('insect')) {
+      return 'Pest Infestation';
+    } else if (description.contains('blight') ||
+        description.contains('disease') ||
+        description.contains('rot')) {
+      return 'Disease';
+    } else if (description.contains('damage')) {
+      return 'Physical Damage';
+    } else {
+      return 'General Issue';
+    }
+  }
+
+  bool _isYellowish(int r, int g, int b) {
+    return r > 200 && g > 200 && b < 100;
   }
 }
