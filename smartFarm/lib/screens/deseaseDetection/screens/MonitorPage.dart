@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartfarm/screens/deseaseDetection/constants/constants.dart';
 import 'package:smartfarm/screens/deseaseDetection/services/api_service.dart';
+// import '../services/plant_disease_service.dart';
 
 class MonitorPage extends StatefulWidget {
   const MonitorPage({super.key});
@@ -15,16 +16,25 @@ class MonitorPage extends StatefulWidget {
 }
 
 class _MyMonitorPageState extends State<MonitorPage> {
-  // Initialize service with API key
-  final plantService = PlantDiseaseService(
-      apiKey:
-          'AIzaSyBKOG1234567890qwertyuiop'); // Replace with your actual API key
+  final plantService = PlantDiseaseService();
   File? _selectedImage;
   List<Map<String, dynamic>> detectedConditions = [];
   String statusMessage = '';
   bool detecting = false;
 
-  // Removed initState and _initializeService since they're no longer needed
+  @override
+  void initState() {
+    super.initState();
+    _initializeService();
+  }
+
+  Future<void> _initializeService() async {
+    try {
+      await plantService.init();
+    } catch (error) {
+      _showErrorSnackBar(error);
+    }
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile =
@@ -39,12 +49,9 @@ class _MyMonitorPageState extends State<MonitorPage> {
   }
 
   Future<void> detectDisease() async {
-    if (_selectedImage == null) return;
-
     setState(() {
       detecting = true;
     });
-
     try {
       final result = await plantService.analyzePlantDisease(
         image: _selectedImage!,
@@ -102,12 +109,10 @@ class _MyMonitorPageState extends State<MonitorPage> {
   }
 
   void _showErrorSnackBar(Object error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(error.toString()),
-        backgroundColor: Colors.red,
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(error.toString()),
+      backgroundColor: Colors.red,
+    ));
   }
 
   @override
