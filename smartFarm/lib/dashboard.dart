@@ -4,6 +4,8 @@ import 'package:smartfarm/screens/deseaseDetection/screens/MonitorPage.dart';
 import '../weather/home_page.dart';
 
 class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,8 +127,8 @@ class DashboardPage extends StatelessWidget {
       label: Text(label),
       style: ButtonStyle(
         backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.blue.withOpacity(0.7)),
-        shape: MaterialStateProperty.all<OutlinedBorder>(
+            WidgetStateProperty.all<Color>(Colors.blue.withOpacity(0.7)),
+        shape: WidgetStateProperty.all<OutlinedBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
