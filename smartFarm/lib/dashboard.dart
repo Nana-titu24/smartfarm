@@ -83,8 +83,26 @@ class DashboardPage extends StatelessWidget {
               _buildButtonWithIcon(context, 'Harvest Data', Icons.agriculture,
                   _showHarvestDataForm),
               const SizedBox(height: 10),
-              _buildButtonWithIcon(context, 'Latest Agriculture News',
-                  Icons.article, _navigateToChat),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog first
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChatScreen()),
+                  );
+                },
+                icon: const Icon(Icons.article),
+                label: const Text('Latest Agriculture News'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.blue.withOpacity(0.7)),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
               _buildButtonWithIcon(
                   context, 'Trends', Icons.trending_up, _showTrendsForm),
@@ -115,13 +133,6 @@ class DashboardPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const DiseaseDetection()),
-    );
-  }
-
-  void _navigateToChat(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ChatScreen()),
     );
   }
 
