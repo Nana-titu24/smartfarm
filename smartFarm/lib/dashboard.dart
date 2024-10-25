@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smartfarm/chat/pages/home_page.dart';
 import 'package:smartfarm/screens/deseaseDetection/screens/MonitorPage.dart';
-
 import '../weather/home_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -83,8 +83,9 @@ class DashboardPage extends StatelessWidget {
               _buildButtonWithIcon(context, 'Harvest Data', Icons.agriculture,
                   _showHarvestDataForm),
               const SizedBox(height: 10),
+              // Directly navigate to ChatScreen instead of showing a dialog
               _buildButtonWithIcon(context, 'Latest Agriculture News',
-                  Icons.article, _showLatestAgricultureNewsForm),
+                  Icons.article, _navigateToChat),
               const SizedBox(height: 10),
               _buildButtonWithIcon(
                   context, 'Trends', Icons.trending_up, _showTrendsForm),
@@ -96,7 +97,7 @@ class DashboardPage extends StatelessWidget {
                   context, 'Metrics', Icons.analytics, _showMetricsForm),
               const SizedBox(height: 10),
               _buildButtonWithIcon(
-                  context, 'scanner', Icons.monitor, _goToMonitorPage),
+                  context, 'Scanner', Icons.monitor, _goToDiseaseDetection),
             ],
           ),
         ),
@@ -111,10 +112,18 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  void _goToMonitorPage(BuildContext context) {
+  void _goToDiseaseDetection(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MonitorPage()),
+      MaterialPageRoute(builder: (context) => const DiseaseDetection()),
+    );
+  }
+
+  // Navigate to ChatScreen
+  void _navigateToChat(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChatScreen()),
     );
   }
 
@@ -127,8 +136,8 @@ class DashboardPage extends StatelessWidget {
       label: Text(label),
       style: ButtonStyle(
         backgroundColor:
-            WidgetStateProperty.all<Color>(Colors.blue.withOpacity(0.7)),
-        shape: WidgetStateProperty.all<OutlinedBorder>(
+            MaterialStateProperty.all<Color>(Colors.blue.withOpacity(0.7)),
+        shape: MaterialStateProperty.all<OutlinedBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
@@ -270,7 +279,10 @@ class DashboardPage extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatScreen()),
+                );
               },
               child: const Text('Close'),
             ),
@@ -326,7 +338,7 @@ class DashboardPage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Metrics'),
-          content: const Text('1,2,3.'),
+          content: const Text('data analysis.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
