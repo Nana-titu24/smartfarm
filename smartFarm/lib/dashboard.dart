@@ -83,26 +83,8 @@ class DashboardPage extends StatelessWidget {
               _buildButtonWithIcon(context, 'Harvest Data', Icons.agriculture,
                   _showHarvestDataForm),
               const SizedBox(height: 10),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog first
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ChatScreen()),
-                  );
-                },
-                icon: const Icon(Icons.article),
-                label: const Text('Latest Agriculture News'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Colors.blue.withOpacity(0.7)),
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                ),
-              ),
+              _buildButtonWithIcon(context, 'Latest Agriculture News',
+                  Icons.article, _navigateToChat),
               const SizedBox(height: 10),
               _buildButtonWithIcon(
                   context, 'Trends', Icons.trending_up, _showTrendsForm),
@@ -123,6 +105,7 @@ class DashboardPage extends StatelessWidget {
   }
 
   void _navigateToWeatherPage(BuildContext context) {
+    Navigator.pop(context); // Close the dialog first
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
@@ -130,9 +113,18 @@ class DashboardPage extends StatelessWidget {
   }
 
   void _goToDiseaseDetection(BuildContext context) {
+    Navigator.pop(context); // Close the dialog first
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const DiseaseDetection()),
+      MaterialPageRoute(builder: (context) => const ChatScreen()),
+    );
+  }
+
+  void _navigateToChat(BuildContext context) {
+    Navigator.pop(context); // Close the dialog first
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChatScreen()),
     );
   }
 
