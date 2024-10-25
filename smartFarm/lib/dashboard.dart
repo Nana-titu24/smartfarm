@@ -83,7 +83,6 @@ class DashboardPage extends StatelessWidget {
               _buildButtonWithIcon(context, 'Harvest Data', Icons.agriculture,
                   _showHarvestDataForm),
               const SizedBox(height: 10),
-              // Directly navigate to ChatScreen instead of showing a dialog
               _buildButtonWithIcon(context, 'Latest Agriculture News',
                   Icons.article, _navigateToChat),
               const SizedBox(height: 10),
@@ -119,7 +118,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // Navigate to ChatScreen
   void _navigateToChat(BuildContext context) {
     Navigator.push(
       context,
@@ -127,7 +125,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // Function to create a button with an icon
   Widget _buildButtonWithIcon(BuildContext context, String label, IconData icon,
       Function(BuildContext) onPressed) {
     return ElevatedButton.icon(
@@ -146,7 +143,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // Functions to show various forms
   void _showPlantGrowthForm(BuildContext context) {
     showDialog(
       context: context,
@@ -260,29 +256,6 @@ class DashboardPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showLatestAgricultureNewsForm(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Latest Agriculture News'),
-          content: const Text('news headlines,content.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChatScreen()),
-                );
               },
               child: const Text('Close'),
             ),
