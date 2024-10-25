@@ -116,7 +116,7 @@ class DashboardPage extends StatelessWidget {
     Navigator.pop(context); // Close the dialog first
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ChatScreen()),
+      MaterialPageRoute(builder: (context) => const DiseaseDetection()),
     );
   }
 
@@ -136,8 +136,8 @@ class DashboardPage extends StatelessWidget {
       label: Text(label),
       style: ButtonStyle(
         backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.blue.withOpacity(0.7)),
-        shape: MaterialStateProperty.all<OutlinedBorder>(
+            WidgetStateProperty.all<Color>(Colors.blue.withOpacity(0.7)),
+        shape: WidgetStateProperty.all<OutlinedBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),

@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Gemini Chat",
+          "smart farm",
         ),
       ),
       body: _buildUI(),

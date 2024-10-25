@@ -179,7 +179,7 @@ class _MyDiseaseDetectionState extends State<DiseaseDetection> {
             ],
           ),
           _selectedImage == null
-              ? Container(
+              ? SizedBox(
                   height: MediaQuery.of(context).size.height * 0.5,
                   child: Image.asset('assets/images/pick1.png'),
                 )
@@ -238,7 +238,8 @@ class _MyDiseaseDetectionState extends State<DiseaseDetection> {
               children: [
                 Container(
                   height: MediaQuery.of(context).size.height * 0.2,
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

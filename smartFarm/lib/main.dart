@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:io';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import './chat/consts.dart';
 import 'dashboard.dart';
 
 void main() async {
+  Gemini.init(
+    apiKey: GEMINI_API_KEY,
+  );
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
@@ -119,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DashboardPage(),
+                      builder: (context) => const DashboardPage(),
                     ),
                   );
                 } catch (e) {
@@ -175,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DashboardPage(),
+                      builder: (context) => const DashboardPage(),
                     ),
                   );
                 } catch (e) {
