@@ -1,103 +1,95 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 
 class ApiService {
   final Dio _dio = Dio();
-  final String API_KEY = "AIzaSyDZu8o67zJyLeus-kyq53EjCKocc-Wi91s";
-  final String BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
+  final String baseUrl =
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest'; // Replace with actual base URL
 
-  Future<String> encodeImage(File image) async {
-    final bytes = await image.readAsBytes();
-    return base64Encode(bytes);
+  Future<String> sendImageToGeminiVision({required File image}) async {
+    try {
+      String fileName = image.path.split('/').last;
+      FormData formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(image.path, filename: fileName),
+      });
+
+      final response = await _dio.post(
+        '$baseUrl/detect-disease',
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': 'Bearer AIzaSyDZu8o67zJyLeus-kyq53EjCKocc-Wi91s',
+          },
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['disease'] ?? 'Unknown disease';
+      } else {
+        throw GeminiVisionException(
+          message: 'Failed to detect disease. Status: ${response.statusCode}',
+          response: response,
+        );
+      }
+    } catch (e) {
+      if (e is DioException) {
+        throw GeminiVisionException(
+          message:
+              'Network error: ${e.message}. Please check your connection and try again.',
+          response: e.response,
+        );
+      }
+      throw GeminiVisionException(
+        message: 'Error detecting disease: $e',
+        response: null,
+      );
+    }
   }
 
   Future<String> sendMessageGemini({required String diseaseName}) async {
     try {
       final response = await _dio.post(
-        "$BASE_URL/models/gemini-pro:generateContent?key=$API_KEY",
+        '$baseUrl/get-precautions',
+        data: {'disease': diseaseName},
         options: Options(
           headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer AIzaSyDZu8o67zJyLeus-kyq53EjCKocc-Wi91s',
           },
         ),
-        data: {
-          "contents": [
-            {
-              "parts": [
-                {
-                  "text":
-                      "Upon receiving the name of a plant disease, provide three precautionary measures to prevent or manage the disease. These measures should be concise, clear, and limited to one sentence each. No additional information or context is needed—only the three precautions in bullet-point format. The disease is $diseaseName"
-                }
-              ]
-            }
-          ],
-          "generationConfig": {
-            "temperature": 0.7,
-            "maxOutputTokens": 100,
-          },
-        },
       );
 
-      final jsonResponse = response.data;
-
-      if (jsonResponse['error'] != null) {
-        throw HttpException(jsonResponse['error']["message"]);
+      if (response.statusCode == 200) {
+        return response.data['precautions'] ?? 'No precautions available';
+      } else {
+        throw GeminiVisionException(
+          message: 'Failed to get precautions. Status: ${response.statusCode}',
+          response: response,
+        );
       }
-
-      return jsonResponse["candidates"][0]["content"]["parts"][0]["text"];
-    } catch (error) {
-      throw Exception('Error: $error');
-    }
-  }
-
-  Future<String> sendImageToGeminiVision({
-    required File image,
-    int maxTokens = 50,
-  }) async {
-    final String base64Image = await encodeImage(image);
-
-    try {
-      final response = await _dio.post(
-        "$BASE_URL/models/gemini-pro-vision:generateContent?key=$API_KEY",
-        options: Options(
-          headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-          },
-        ),
-        data: {
-          "contents": [
-            {
-              "parts": [
-                {
-                  "text":
-                      "Your task is to identify plant health issues with precision. Analyze any image of a plant or leaf I provide, and detect all abnormal conditions, whether they are diseases, pests, deficiencies, or decay. Respond strictly with the name of the condition identified, and nothing else—no explanations, no additional text. If a condition is unrecognizable, reply with 'I don't know'. If the image is not plant-related, say 'Please pick another image'"
-                },
-                {
-                  "inline_data": {
-                    "mime_type": "image/jpeg",
-                    "data": base64Image
-                  }
-                }
-              ]
-            }
-          ],
-          "generationConfig": {
-            "temperature": 0.4,
-            "maxOutputTokens": maxTokens,
-          },
-        },
-      );
-
-      final jsonResponse = response.data;
-
-      if (jsonResponse['error'] != null) {
-        throw HttpException(jsonResponse['error']["message"]);
-      }
-
-      return jsonResponse["candidates"][0]["content"]["parts"][0]["text"];
     } catch (e) {
-      throw Exception('Error: $e');
+      if (e is DioException) {
+        throw GeminiVisionException(
+          message:
+              'Network error: ${e.message}. Please check your connection and try again.',
+          response: e.response,
+        );
+      }
+      throw GeminiVisionException(
+        message: 'Error getting precautions: $e',
+        response: null,
+      );
     }
   }
+}
+
+class GeminiVisionException implements Exception {
+  final String message;
+  final Response? response;
+
+  GeminiVisionException({required this.message, this.response});
 }

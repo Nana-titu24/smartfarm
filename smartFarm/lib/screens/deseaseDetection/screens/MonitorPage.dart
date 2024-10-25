@@ -1,22 +1,20 @@
 import 'dart:io';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartfarm/screens/deseaseDetection/constants/constants.dart';
-
 import '../services/api_service.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class MonitorPage extends StatefulWidget {
+  const MonitorPage({super.key});
 
   @override
-  State<HomePage> createState() => _MyHomePageState();
+  State<MonitorPage> createState() => _MyMonitorPageState();
 }
 
-class _MyHomePageState extends State<HomePage> {
+class _MyMonitorPageState extends State<MonitorPage> {
   final apiService = ApiService();
   File? _selectedImage;
   String diseaseName = '';
@@ -39,8 +37,8 @@ class _MyHomePageState extends State<HomePage> {
       detecting = true;
     });
     try {
-      diseaseName =
-          await apiService.sendImageToGPT4Vision(image: _selectedImage!);
+      diseaseName = await apiService.sendImageToGeminiVision(
+          image: _selectedImage!); // Updated method name
     } catch (error) {
       _showErrorSnackBar(error);
     } finally {
@@ -56,8 +54,8 @@ class _MyHomePageState extends State<HomePage> {
     });
     try {
       if (diseasePrecautions == '') {
-        diseasePrecautions =
-            await apiService.sendMessageGPT(diseaseName: diseaseName);
+        diseasePrecautions = await apiService.sendMessageGemini(
+            diseaseName: diseaseName); // Updated method name
       }
       _showSuccessDialog(diseaseName, diseasePrecautions);
     } catch (error) {
