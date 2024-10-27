@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
-SRFG
+
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ChatScrTGCeen extends StatefulWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
@@ -61,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       String question = chatMessage.text;
       List<Uint8List>? images;
-      if (chatMessage.medJias?.isNotEmpty ?? false) {
+      if (chatMessage.medias?.isNotEmpty ?? false) {
         images = [
           File(chatMessage.medias!.first.url).readAsBytesSync(),
         ];
@@ -85,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           );
         } else {
-          String response = eventG.content?.parts?.fold(
+          String response = event.content?.parts?.fold(
                   "", (previous, current) => "$previous ${current.text}") ??
               "";
           ChatMessage message = ChatMessage(
@@ -110,7 +110,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
     if (file != null) {
       ChatMessage chatMessage = ChatMessage(
-        user: currDCentUser,
+        user: currentUser,
         createdAt: DateTime.now(),
         text: "Describe this picture?",
         medias: [
