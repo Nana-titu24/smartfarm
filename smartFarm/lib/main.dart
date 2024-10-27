@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,31 +13,21 @@ void main() async {
     apiKey: GEMINI_API_KEY,
   );
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Gemini
-  Gemini.init(
-    apiKey: 'AIzaSyDZu8o67zJyLeus-kyq53EjCKocc-Wi91s',
-  );
-
-  // Initialize Firebase
-  if (Platform.isAndroid) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: "AIzaSyC7NHmajgeYlbU03PJ8WbOJYa4SztEa2Fw",
-        appId: "1:355240987985:android:f256be5591992a7e885770",
-        messagingSenderId: "355240987985",
-        projectId: "agrisfa",
-      ),
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
-
+  Platform.isAndroid
+      ? await Firebase.initializeApp(
+          options: const FirebaseOptions(
+            apiKey: "AIzaSyC7NHmajgeYlbU03PJ8WbOJYa4SztEa2Fw",
+            appId: "1:355240987985:android:f256be5591992a7e885770",
+            messagingSenderId: "355240987985",
+            projectId: "agrisfa",
+          ),
+        )
+      : await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +42,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title});
+
   final String title;
 
   @override
@@ -206,13 +200,56 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        title: Text(widget.title),
       ),
-      body: Center(
-        child: Text(
-          'Welcome to SMART FARM',
-          style: TextStyle(fontSize: 24),
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/img1.jpg', // Replace 'assets/background_image.jpg' with your actual image path
+            fit: BoxFit.cover,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withOpacity(0.6),
+                  Colors.black.withOpacity(0.4),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'WELCOME TO SMART FARM',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _showLoginDialog,
+                  child: const Text('Login'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _showSignupDialog,
+                  child: const Text('Sign Up'),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
