@@ -56,6 +56,7 @@ class _MyDiseaseDetectionState extends State<DiseaseDetection> {
       });
     }
   }
+  // tio
 
   showPrecautions() async {
     setState(() {
